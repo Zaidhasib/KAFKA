@@ -1,0 +1,72 @@
+/*
+
+this code is for learning purpose
+In this code we are adding the logger , logger is used to generate log statement
+A callback interface that the user can implenr to allow code to executte hen the requests is complete.The callbac is generally execute in the
+background I/O thread so it can be fast
+Here we are adding the key in the producer API so the keys will go the same partition.
+*/
+
+
+package package_demo_project.first_program;
+
+import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+//import java.util.logging.Logger;
+
+public class ProducerDemoKeys {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {//this exception is occured becuse of the get method that we have used
+
+        final Logger logger = LoggerFactory.getLogger(ProducerDemoKeys.class);
+        //creating kafka properties
+        // System.out.println("hello world"); for testing our code
+        Properties properties = new Properties();
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        //crete the producer
+        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
+        int i;
+        for(i = 0; i<10; i++) {//this is to print the value multiple times
+         String topic = "first_topic";
+         String value = "hello world "+ Integer.toString(i);
+         String key = "id_" + Integer.toString(i);
+
+         ProducerRecord<String, String> record = new ProducerRecord<String, String>(topic, key,value);
+         logger.info(key+"is the key");//log the key
+         //send the data-asynchronous data
+         producer.send(record, new Callback() {//the callback class will ovrride the onCompletion method
+                     public void onCompletion(RecordMetadata recordMetadata, Exception e) {
+                         //this will execute every time when record is succesful or when ever exception is thrown
+                         if (e != null) {
+                             //record is succesfully sent, to check whether it is succesfuly sent or not
+                             logger.info(recordMetadata.topic() + "is the topic name" + recordMetadata.partition() + " is the number of partitions");
+                         } else {
+                             logger.error("Error while producing", e);
+                         }
+                     }
+                 }
+
+         ).get(); //when this is executed the program end, here when you press ctrl+p, we are using .get() method to make this as synchronous record.
+         logger.info("The value has been sent");
+
+         producer.flush();//this enforce all data to be closed
+         producer.close();
+     }
+    }
+}
+
+
+
+
+
+
+
+
+
