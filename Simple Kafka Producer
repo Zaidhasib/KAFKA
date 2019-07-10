@@ -1,0 +1,50 @@
+/*
+
+this code is for learning purpose
+making simple kafka producer which will just send one value to the consumer in the given topic
+*/
+
+
+package package_demo_project.first_program;
+
+import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
+import java.util.Properties;
+//import java.util.logging.Logger;
+
+public class ProducerDemo {
+    public static void main(String[] args) {
+
+        final Logger logger = LoggerFactory.getLogger(ProducerDemo.class);
+        //creating kafka properties
+        // System.out.println("hello world"); for testing our code
+        Properties properties = new Properties();
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        //crete the producer
+
+        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
+
+        ProducerRecord<String, String> record = new ProducerRecord<String, String>("first_topic", "helloworld");
+        //send the data-asynchronous data
+        producer.send(record); //when this is executed the program end
+        logger.info("The value has been sent");
+
+        producer.flush();//this enforce all data to be closed
+        producer.close();
+    }
+}
+
+
+
+
+
+
+
+
+
