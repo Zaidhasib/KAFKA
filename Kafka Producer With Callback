@@ -28,10 +28,11 @@ public class ProducerDemoWithCallback {
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
         //crete the producer
+        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
+
         int i;
         for(i = 0; i<10; i++) {//this is to print the value multiple times
-         KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
-
+         
          ProducerRecord<String, String> record = new ProducerRecord<String, String>("first_topic", "helloworld"+ Integer.toString(i));
          //send the data-asynchronous data
          producer.send(record, new Callback() {//the callback class will ovrride the onCompletion method
