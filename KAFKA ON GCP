@@ -1,0 +1,22 @@
+HOW TO COMPILE KAFKA PROJECT IN GCP USING SBT 
+
+1. SSH TO KAFKA 
+2. DOWNLOAD THE OPEN JDK  sudo apt-get install openjdk-8-jdk    
+3. INSTALL SBT 
+ echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+ sudo apt-get update
+ sudo apt-get install sbt
+4.MAKE A DIRECTORY IN THE KAFKA (mkdir kafka_project)
+5.GO TO YOUR DIRECTORY  (cd directory)
+6.TYPE sbt IN THAT DIRECTORY
+7. create built.sbt file nano buidl.sbt
+    name := "KafkaTest"
+
+    scalaVersion := "2.11.8"
+                                                    
+    libraryDependencies ++= Seq(
+        "org.apache.kafka" % "kafka-clients" % "1.0.0") 
+8.Create a source code file
+			nano SimpleProducer.java
+9.compile the code by sbt compile and run by sbt run			
+ 
