@@ -1,0 +1,63 @@
+package package_demo_project.first_program;
+
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Properties;
+//import java.util.logging.Logger;
+
+public class ConsumerDemo {
+    public static void main(String[] args) {
+        //System.out.println("Hello World");
+        Logger logger = LoggerFactory.getLogger(ConsumerDemo.class.getName());
+
+        String bootstrapserver = "127.0.0.1:9092";
+        String groupId = "my-forth-application";
+        String topic = "first_topic";
+
+        Properties properties = new Properties();
+
+        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,bootstrapserver);
+        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG,groupId);
+        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");//earliest means that you want to read from very beggining of the topic
+        //latest means that you are gonna read from only te new messages.
+        //none will throw an error if there is no offsets is being saved
+
+        //create a consumer
+        KafkaConsumer<String,String> consumer  = new KafkaConsumer<String, String>(properties);
+
+
+        //Subscribe a consumer to our topics
+        consumer.subscribe(Arrays.asList(topic));
+
+        //poll to new data
+        while(true){
+            ConsumerRecords<String,String > records =
+            consumer.poll(Duration.ofMillis(100));//this will uses a duration, earlier it used to take a number , this will add a
+            //dependency in the pom.xml file with the configuration 8. same as producer record here also consumer record will recieve from a specified topic amd partition.
+            for (ConsumerRecord<String,String> record: records){// this is lambda function for for loop. : means 'in'
+                logger.info("key is"+ record.key() + "value is "+ record.value());
+                logger.info("partition is" + record.partition() + "offset is" + record.offset());
+                //the consumer will first read from partition 1, then 2 and so on...
+
+
+            }
+
+        }
+
+
+
+
+    }
+}
