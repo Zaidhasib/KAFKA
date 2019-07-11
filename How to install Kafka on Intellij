@@ -1,0 +1,18 @@
+------How to install kafka on Intellij----------------
+1. Download jdk 1.8 in your system
+2. Install intellij community version in your desktop
+3. Open Intellij
+	New Project->Choose maven ->project SDK: java 1.8
+	Next
+	Write Group_Id, Artifact_Id
+	project name
+	Next
+4. Go to pom.xml file
+	add dependencies
+	Go to google, search for kafka maven repository
+	Copy the dependecy from Kafka Client repository
+	Paste it on intellij -> Enable import 
+5. Download slf4j logger
+   Search slf4j simple
+   Copy and paste in pom.xml
+   Remove the scope test, since we want this dependecy for whole code
